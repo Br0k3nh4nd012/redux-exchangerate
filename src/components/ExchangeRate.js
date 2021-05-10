@@ -6,19 +6,14 @@ import { useSelector } from 'react-redux';
 import { getExchangeRates } from "../api";
 
 const supportedCurrencies = ["USD", "EUR", "JPY", "CAD", "GBP", "MXN"];
-// "EURJPYCADGBPMXN"
 export function ExchangeRate() {
   // const [amount, setAmount] = useState("1.50");
   // const [currencyCode, setCurrencyCode] = useState("USD");
   const amount = useSelector((state) => state.amount);
   const currencyCode = useSelector((state) => state.currencyCode);
 
-  // const setAmount = () => { 
-
-  // }
-  // const setCurrencyCode = () => {
-
-  // }
+  // const setAmount = () => {}
+  // const setCurrencyCode = () => {}
 
   const [currencyData, setCurrencyData] = useState({ USD: 1.0 });
 
