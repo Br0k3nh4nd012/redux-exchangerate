@@ -1,7 +1,7 @@
 const initialState = {
     amount : '312.99',
     currencyCode : 'EUR',
-    currencyData :{ USD: 1.0 },
+    currencyData :{ USD : { displayLabel : "US Dollars" ,code : "USD" , rate : 1.0 } },
     supportedCurrencies : ["USD", "EUR", "JPY", "CAD", "GBP", "MXN"]
 }
 
@@ -12,8 +12,26 @@ export function ratesReducer( state = initialState, action){
     if(action.type === "rates/currencycodeChanged" ){
         return {...state , currencyCode : action.payload};
     }
+    if(action.type === "rates/labelRecieved"){
+        const { displayLabel , currencyCode } = action.payload;
+        return {
+            ...state,
+            currencyData : {
+                ...state.currencyData ,
+                [currencyCode] : {
+                    ...state.currencyData[currencyCode],
+                    displayLabel : displayLabel,
+                }
+            }
+        }
+    }
     if(action.type === "rates/recieved"){
-        return {...state , currencyData : action.payload};
+        const rates = Object.keys(action.payload).concat(state.currencyCode);
+        const currencyData = {};
+        for (let code in action.payload){
+            currencyData[code] = ({ code , rate:action.payload[code]} );
+        }
+        return {...state , currencyData, supportedCurrencies:rates};
     }
     return state;
 }
@@ -24,6 +42,10 @@ export const getAmount = state => state.rates.amount;
 export const getCurrencyCode = state => state.rates.currencyCode; 
 export const getCurrencyData = state => state.rates.currencyData;
 export const getSupportedCurrencies = state => state.rates.supportedCurrencies;
+export const getDisplayLabel = (state , currencyCode) => {
+    const match = state.rates.currencyData.find((data) => data.code === currencyCode);
+    if( match ) return match.displayLabel;
+}
 
 //action types
 export const AMOUNT_CHANGED = "rates/amountChanged";
